@@ -1,0 +1,332 @@
+@startuml
+class logic.ClickHandler {
++ void clickClicked(double,double)
+}
+
+class panel.ExitBtn {
++ void draw(GraphicsContext)
+}
+
+class panel.RootPane {
+- {static} RootPane instance
+- int ORIGINAL_TILE_SIZE
+- int SCALE
+- int TILE_SIZE
+- int MAX_SCREEN_COLUMN
+- int MAX_SCREEN_ROW
+- int SCREEN_WIDTH
+- int SCREEN_HEIGHT
++ {static} RootPane getRootPane()
+}
+
+
+class entity.Entity {
+- int x
+- int speed
+- String direction
++ int spriteCounter
++ int spriteNum
+# Rectangle collisionField
+# boolean isCollided
++ int getX()
++ void setX(int)
++ int getY()
++ void setY(int)
++ int getSpeed()
++ void setSpeed(int)
++ String getDirection()
++ void setDirection(String)
++ Rectangle getCollisionField()
++ void setCollisionField(Rectangle)
++ boolean isCollided()
++ void setCollided(boolean)
+}
+
+
+class panel.GamePanel {
++ int ORIGINAL_TILE_SIZE
+- int SCALE
++ int TILE_SIZE
++ int MAX_SCREEN_COLUMN
++ int MAX_SCREEN_ROW
++ int SCREEN_WIDTH
++ int SCREEN_HEIGHT
+- int FPS
+- long SPAWNING_COOLDOWN
+- long lastSpawnTime
+- int spawnCounter
+- boolean isGameRunning
+- int winner
+- KeyHandler keyHandler1
++ Player player1
++ TileManager tileManager
++ CollisionChecker collisionChecker
++ ExitBtn exitBtn
++ ArrayList<PowerUp> powerUps
++ PowerUpSpawner powerUpSpawner
+- ClickHandler clickHandler
+- WinnerPanel winnerPanel
+- List<Updatable> updatableEntities
+- List<Drawable> drawableEntities
++ void update()
++ void redraw()
++ void initializedPlayer()
++ void initializedAllFields()
++ void setGameRunning(boolean)
++ boolean getGameRunning()
++ void setWinner(int)
+}
+
+
+class logic.KeyHandler {
+- boolean isUpPressed
++ void keyPressed(KeyCode,int)
++ void keyReleased(KeyCode,int)
++ boolean isUpPressed()
++ boolean isLeftPressed()
++ boolean isDownPressed()
++ boolean isRightPressed()
++ boolean isFired()
+}
+
+
+class logic.PlayerStateModifier {
+- {static} long SPEED_BOOST_DURATION
+- {static} long DAMAGE_BOOST_DURATION
+- {static} long INVINCIBILITY_DURATION
++ {static} void modifyState(PowerUp,Player)
+}
+
+
+class panel.WinnerPanel {
++ void draw(GraphicsContext,int)
+}
+
+class panel.HowToPlayPanel {
+}
+class tile.Tile {
++ Image image
+- boolean hasCollisionField
++ boolean HasCollisionField()
++ void setHasCollisionField(boolean)
+}
+
+
+class logic.PowerUpSpawner {
+- GamePanel GAMEPANEL
+- Random RANDOM
++ void spawn()
++ int[] getRandomCoordinate()
++ String getRandomType()
+}
+
+
+class logic.HpReducer {
++ {static} void reducePlayerHp(Player,Bullet)
+}
+
+class panel.MapSelectPanel {
++ ImageView baseImageView(String,int)
++ void zoomUpgrade(ImageView)
+}
+
+class logic.SceneChanger {
+- {static} SceneChanger instance
+- {static} Stage primaryStage
+- {static} Scene primaryScene
+- {static} RootPane rootPane
+- {static} GamePanel gamePanel
++ {static} void setRootPane(RootPane)
++ {static} void setPrimaryScene(Scene)
++ {static} void gotoGamePanel(int)
++ {static} void setPrimaryStage(Stage)
++ {static} void gotoHowToPlayPanel()
++ {static} void gotoMapSelectPanel()
++ {static} void gotoMainMenu()
++ {static} void clear()
++ {static} SceneChanger getInstance()
++ {static} Button getExitButton()
++ {static} GamePanel getGamePanel()
+}
+
+
+interface interfaces.Updatable {
++ void update()
+}
+
+class entity.PowerUp {
+- boolean isCollidedWithP2
+- boolean isCollidedWithP1
+- Image image
+- String type
+- boolean isWorking
+- {static} long DURATION
+- long CREATION_TIME
++ void getPowerUpImage()
++ void update()
++ void draw(GraphicsContext)
++ boolean isWorking()
++ void setWorking(boolean)
++ String getType()
++ void setType(String)
++ boolean isCollidedWithP2()
++ void setCollidedWithP2(boolean)
++ boolean isCollidedWithP1()
++ void setCollidedWithP1(boolean)
+}
+
+
+interface interfaces.Drawable {
++ void draw(GraphicsContext)
+}
+
+class entity.Player {
+- GamePanel GAMEPANEL
+- KeyHandler KEYHANDLER
+- int ID
+- boolean isCollidedWithWall
+- Image previousSpriteImage
+- ArrayList<Bullet> bullets
+- long FIRING_COOLDOWN
+- long lastFiringTime
+- String lastNonStopDirection
+- int MAX_HP
+- int hp
+- Map<String,Long> state
+- long lastHitTime
+- long REDUCE_HP_COOLDOWN
+- int DEFAULT_SPEED
+- Image up1
++ void setDefaultValues()
++ void getPlayerImage()
++ void update()
++ void move()
++ void adjustSprite()
+- void manageBuffs()
++ void manageBullets()
++ void draw(GraphicsContext)
+- void drawPlayer(GraphicsContext)
+- void drawBarrier(GraphicsContext)
+- void drawStateDisplay(GraphicsContext)
+- void drawHealthBar(GraphicsContext)
++ int getID()
+- void fire()
++ String getLastNonStopDirection()
+- boolean shootable()
++ int getHp()
++ void setHp(int)
++ int getMAX_HP()
++ long getLastHitTime()
++ void setLastHitTime(long)
++ long getREDUCE_HP_COOLDOWN()
++ Map<String,Long> getState()
++ void setState(Map<String,Long>)
++ Image getUp1()
++ void setUp1(Image)
++ Image getUp2()
++ void setUp2(Image)
++ Image getLeft1()
++ void setLeft1(Image)
++ Image getLeft2()
++ void setLeft2(Image)
++ Image getDown1()
++ void setDown1(Image)
++ Image getDown2()
++ void setDown2(Image)
++ Image getRight1()
++ void setRight1(Image)
++ Image getRight2()
++ void setRight2(Image)
++ int getDEFAULT_SPEED()
++ void setCollidedWithWall(boolean)
+}
+
+
+class panel.MainMenuPanel {
+- MediaPlayer mediaPlayer
++ Button baseButton(String)
++ void initializedButton()
++ void zoomUpgrade(Button)
+}
+
+
+class entity.Bullet {
+- GamePanel GAMEPANEL
+- long DURATION
+- int OWNER_ID
+- Image image
+- boolean isWorking
+- long CREATION_TIME
+- int NORMAL_BULLET_DAMAGE
+- int ENHANCED_BULLET_DAMAGE
+- String state
+- boolean isCollidedWithWall
++ void getBulletImage()
++ void update()
++ void draw(GraphicsContext)
++ boolean isWorking()
++ void setWorking(boolean)
++ int getOWNER_ID()
++ void setState(Player)
++ String getState()
++ int getNORMAL_BULLET_DAMAGE()
++ int getENHANCED_BULLET_DAMAGE()
++ boolean isCollidedWithWall()
++ void setCollidedWithWall(boolean)
++ void setSpeed(Player)
++ int getStartingX(Player)
++ int getStartingY(Player)
+}
+
+
+class application.Main {
++ void start(Stage)
++ {static} void main(String[])
+}
+
+class logic.CollisionChecker {
+- GamePanel GAMEPANEL
+~ int tileNum1
++ int[] coordinate(Entity)
++ void checkTile(Entity)
++ void checkPlayer(Entity,Entity)
++ void checkPowerUp(PowerUp,Entity)
++ void checkBulletWithTile(Entity)
+}
+
+
+class tile.TileManager {
+- GamePanel GAMEPANEL
+- Tile[] tiles
+- int[][] mapTileCode
+- {static} String mapCode
++ {static} void setMapCode(int)
++ void getTileImage()
++ void loadMap()
++ void draw(GraphicsContext)
++ int[][] getMapTileCode()
++ Tile[] getTiles()
+}
+
+
+
+
+interfaces.Drawable <|.. panel.ExitBtn
+javafx.scene.control.Button <|-- panel.ExitBtn
+javafx.scene.layout.VBox <|-- panel.RootPane
+javafx.scene.layout.Pane <|-- panel.GamePanel
+javafx.scene.layout.HBox <|-- panel.HowToPlayPanel
+javafx.scene.layout.HBox <|-- panel.MapSelectPanel
+interfaces.Updatable <|.. entity.PowerUp
+interfaces.Drawable <|.. entity.PowerUp
+entity.Entity <|-- entity.PowerUp
+interfaces.Updatable <|.. entity.Player
+interfaces.Drawable <|.. entity.Player
+entity.Entity <|-- entity.Player
+javafx.scene.layout.VBox <|-- panel.MainMenuPanel
+interfaces.Drawable <|.. entity.Bullet
+interfaces.Updatable <|.. entity.Bullet
+entity.Entity <|-- entity.Bullet
+javafx.application.Application <|-- application.Main
+interfaces.Drawable <|.. tile.TileManager
+@enduml
